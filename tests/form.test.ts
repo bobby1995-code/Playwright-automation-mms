@@ -1,38 +1,47 @@
 import { test, expect } from '@playwright/test';
-import axios from 'axios'; // Install Axios for API call
+import axios from 'axios';
+import dotenv from 'dotenv'; 
+
+dotenv.config();
+
+
+const BASE_URL = process.env.BASE_URL || 'https://my-angular-app-mms-test.vercel.app';
+const API_URL = process.env.API_URL || 'http://localhost:4200/api/validate';
 
 test.describe('Metal Management Solutions form test', () => {
+  
+  
+  async function validateAPI() {
+    const response = await axios.get(API_URL);
+    return response.status === 200;
+  }
 
-  test('should enable button only after name input and display correct popup with API validation', async ({ page }) => {
-    // Navigate to the page
-    await page.goto('https://my-angular-app-mms-test.vercel.app/');  // Use the provided app's URL
+  test('should enable button after name input and display correct popup with API validation', async ({ page }) => {
+   
+    await page.goto(BASE_URL);
 
-    // Verify the submit button is present but disabled initially
+    
     const submitButton = page.locator('#submitButton');
-    await expect(submitButton).toBeVisible(); // Ensure button is present on landing page
-    await expect(submitButton).toBeDisabled(); // Ensure button is disabled initially
+    await expect(submitButton).toBeVisible();
+    await expect(submitButton).toBeDisabled();
 
-    // Enter a name in the input field
+  
     await page.fill('#nameInput', 'Test User');
 
-    // Verify the submit button becomes enabled after name input
+
     await expect(submitButton).toBeEnabled();
 
-    // Click the submit button
+  
     await page.click('#submitButton');
 
-    // Verify the popup message
+   
     const notification = page.locator('#notification');
     await expect(notification).toBeVisible();
-    await expect(notification).toHaveText('Welcome to MMS.'); // Confirm correct popup message
+    await expect(notification).toHaveText('Welcome to MMS.');
 
-    // Validate the displayed popup message is correct
-    const popupMessage = await notification.innerText();
-    expect(popupMessage).toBe('Welcome to MMS.');
-
-    // Perform a basic API call to validate 200 status code
-    const response = await axios.get('http://localhost:4200/@fs/Users/pc/my-angular-app/.angular/cache/18.2.2/vite/deps/@angular_core.js?v=a304cd35'); 
-    expect(response.status).toBe(200); // Verify API returns a 200 status code
+  
+    const isValid = await validateAPI();
+    expect(isValid).toBe(true); 
   });
 
 });
