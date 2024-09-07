@@ -1,8 +1,5 @@
-Here's a sample README file you can use for your Playwright, TypeScript automation test on your Angular project:
 
----
-
-# Playwright Automation Test for Angular Project
+# Playwright Automation Test for https://my-angular-app-mms-test.vercel.app/
 
 This project contains Playwright and TypeScript-based automation tests for an Angular application.
 
